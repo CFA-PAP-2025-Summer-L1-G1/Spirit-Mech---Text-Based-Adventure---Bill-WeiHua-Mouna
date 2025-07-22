@@ -25,8 +25,8 @@ texts = []
 curr_input = None
 
 # stores the desired screen size (can be resized to scale this but resolution will remain the same)
-screen_width = 1280
-screen_height = 720
+screen_width = 800
+screen_height = 600
 
 # these are the acceptable inputs for the player
 key_dict = {pygame.K_w : "w", pygame.K_a: "a", pygame.K_s: "s", pygame.K_d: "d",
@@ -64,7 +64,7 @@ load_all_audio("./audio")
 print("Loaded audio:", list(audio.keys()))
 
 
-def start(update):
+def start(update, upd_input):
     # pygame setup
     clock = pygame.time.Clock()
     running = True
@@ -90,6 +90,7 @@ def start(update):
                 elif event.key in key_dict:
                     keys_held.append(key_dict[event.key])
             if event.type == pygame.KEYUP:
+                upd_input(event)
                 if event.key in key_dict and key_dict[event.key] in keys_held:
                     keys_held.remove(key_dict[event.key])
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -98,6 +99,7 @@ def start(update):
                 for element in entities + texts:
                     if hasattr(element, "on_click") and element.rect.collidepoint(scaled_mouse_pos):
                         element.on_click(element)
+                    
 
         game_display.fill(bckgrnd_color)
         if bckgrnd_image != None:
