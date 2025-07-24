@@ -2,8 +2,7 @@ from game_funcs import *
 import game_engine
 import random
 from random import randint
-mrun = 0
-brun = 0
+
 user_input = ""
 printed_text = print_text(user_input, 30)
 
@@ -26,55 +25,41 @@ def clicked_play_button(play_button):
     place_element(printed_text, 100, 400)
     #pygame.mixer.music.load("audio/chiptune.mp3")
     #pygame.mixer.music.play(loops=-1)
-    mecha_dragon()
-    # global startpoint
-    # list = [1,2,3]
-    # startpoint = list.pop()
-    # if startpoint == 1:
-    #     best_buddy()
-    # if startpoint == 2:
-    #     wandering_family()
-    # if startpoint == 3:
-    #     mecha_dragon()
+    #pygame.mixer.music.set_volume(0.1) 
+    best_buddy()
 
 # Characters
 def best_buddy(): # Summons best buddy
-    global brun
-    brun = 1
     global best_buddy_image
     global best_buddy_dialogue
     best_buddy_image = add_image("alien.png") # Placeholder image
     add_image("textbox.png")
     place_element(best_buddy_image, 1, 1)
-    best_buddy_dialogue = print_text("Something", 30) # Placeholder dialogue
-    place_element(best_buddy_dialogue, 320, 400)
+    best_buddy_dialogue = print_text("Hey there traveler! You heading 'South' or 'North' from here?", 30) # Placeholder dialogue
+    place_element(best_buddy_dialogue, 100, 300)
     
 def best_buddy_option():
-    if "x" in user_input: # X is placeholder for option 1
-        remove_el(best_buddy_image)
-        remove_el(best_buddy_dialogue)
-        brun = 0
-        best_buddy_option1 = print_text("Heading X", 30)
-        place_element(best_buddy_option1, 320, 300)
-        return
+    global best_buddy_option1
+    global next
+    if "north" in user_input: 
+        best_buddy_option1 = print_text("Heading North! Me too! ('next')", 30)
+        place_element(best_buddy_option1, 280, 300)
+        next = "boss"
 
-    elif "y" in user_input: # Y is a placeholder for option 2
-        remove_el(best_buddy_image)
-        remove_el(best_buddy_dialogue)
-        brun = 0
-        best_buddy_option2 = print_text("Heading this way I guess", 30)
-        place_element(best_buddy_option2, 320, 300)
-        return
+    elif "south" in user_input:
+        best_buddy_option1 = print_text("Heading South, I assume you don't mind if I tag along? ('next')", 30)
+        place_element(best_buddy_option1, 80, 300)
+        next = "family"
+
         
 def mecha_dragon(): # Summons Mecha Dragon
-    global mrun
-    mrun = 1
     mecha_dragon_image = add_image("mechadragon.png") # the mecha dragon img
     place_element(mecha_dragon_image, 1, 1)
     resize_image(mecha_dragon_image, 800)
-    mecha_dragon_dialogue = print_text("YOU THERE!!! You, who have stolen that powerful mech. I shall forcibly take it from your hands!", 30)
-    place_element(mecha_dragon_dialogue, 100, 350)
-    mecha_dragon_option = print_text("If you really want it. Be ready to forefit your life, Dragon!", 40)
+    global mecha_dragon_dialogue
+    mecha_dragon_dialogue = print_text("YOU THERE!!! You, who have stolen that powerful mech. I shall forcibly take it from your hands!", 10)
+    place_element(mecha_dragon_dialogue, 50, 350)
+    mecha_dragon_option = print_text("If you really want it. Be ready to forefit your life, Dragon!", 10)
     place_element(mecha_dragon_option, 320, 400)
     add_image("textbox.png")
     
@@ -100,7 +85,6 @@ def mecha_dragon_fight_option(): # The player's option
     global result_dialogue
     global result_text
     global try_again
-    
     if "fight" in user_input: # The results of fight
         remove_el(fight_intruction)
         result = random.choice(["Win", "Win", "Win", "Lose"])
@@ -173,8 +157,9 @@ def mecha_dragon_fight_option(): # The player's option
         click(try_again, try_again_button)
     
     elif "run" in user_input: # The result of run
-        sys.exit()
-            
+        remove_el(fight_intruction)
+        add_image("gameover.png")
+
 
 def wandering_family(): # Introduces the Wandering Family To The Game 
     global wandering_family_image
@@ -182,27 +167,38 @@ def wandering_family(): # Introduces the Wandering Family To The Game
     wandering_family_image = add_image("dino.gif") #place holder for now 
     add_image("textbox.png")
     place_element(wandering_family_image, 1, 1)
-    wandering_family_dialogue = print_text("A wandering family of 3 asks for spirit-fuel to keep their house running.", 30)
-    place_element(wandering_family_dialogue, 100, 200)
+    wandering_family_dialogue = print_text("Please kind sir, please spare some spirit fuel for this poor family. (accept/decline)", 25)
+    place_element(wandering_family_dialogue, 80, 300)
     
 # global wandering_family_option # Introduces the user to an option of giving spirit fuel, or declining
 def wandering_family_option():
-    if "yes" in user_input:
-        remove_el(wandering_family_dialogue)
-        add_image("asteroid.png") #place holder for now
-        accepted_option_text = print_text("Thank you, traveler. May the gods be with you on this journey.", 30)
-        place_element(accepted_option_text, 60, 300)
-    elif "no" in user_input:
-        remove_el(wandering_family_dialogue)
-        add_image("wall.png") #place holder for now
-        refused_option_text = print_text("Sorry about bothering you. No worries.", 30)
-        place_element(refused_option_text, 60, 300)
+    global wandering_family_option_text, wandering_family_option_image
+    if "accept" in user_input:
+        wandering_family_option_image = add_image("asteroid.png") #place holder for now
+        wandering_family_option_text = print_text("Ahh, traveler, I got hit by the 'boss'. Don't 'fight' it! Defend all you can!", 30)
+
+    elif "decline" in user_input:
+        # global starttime
+        # global delay
+        # delay = 2500
+        wandering_family_option_text = print_text("Sorry to bother.. SOMETHING will happen to you soon...", 30)
+        # starttime = pygame.time.get_ticks()
+        pygame.time.delay(2500)
+        clear()
+        add_background("gameover.png")
+    place_element(wandering_family_option_text, 60, 300)
+    place_element(wandering_family_option_image, 320, 300)
+
     
 
 # WARNING: For advanced students/game requirements
 # Called once per frame (there are 60 frames per second)
 # DO NOT CHANGE FUNCTION NAME
 def update():
+    # current_ticks = pygame.time.get_ticks()
+    # if current_ticks - starttime >= delay:
+    #     clear()
+    #     add_background("gameover.png")
     pass
 
 # User Input Functions
@@ -210,19 +206,36 @@ def submitted_input():
     global user_input
     if "quit" in user_input:
         sys.exit()
-    # if "north" in user_input: # go north
-    #     submitted_text = print_text("detected north", 30)
-    #     place_element(submitted_text, 320, 300)
-    # if startpoint == 1:
-    #     best_buddy_option()
-    #     startpoint = 2 # code to move to the next path
-    # if startpoint == 2:
-    #     mecha_dragon_fight_option()
-    #     startpoint = 3 # code to move to the next path
-    # if startpoint == 3:
-    #     wandering_family_option()
-    #     # code to move to the next path
-    mecha_dragon_fight_option()
+    if "shut up" in user_input:
+        pygame.mixer.music.stop()
+    if "north" in user_input or "south" in user_input:
+        remove_el(best_buddy_image)
+        remove_el(best_buddy_dialogue)
+        best_buddy_option()
+        # if next == "boss":
+        #     remove_el(wandering_family_option_text)
+        #     remove_el(wandering_family_option_image)
+        #     mecha_dragon()
+        # if next == "family":
+        #     remove_el(best_buddy_option1)
+        #     wandering_family()
+    
+    if "next" in user_input:
+        remove_el(best_buddy_option1)
+        wandering_family()
+
+    if "accept" in user_input or "decline" in user_input:
+        remove_el(wandering_family_dialogue)
+        remove_el(wandering_family_image)
+        wandering_family_option()
+
+    if "boss" in user_input:
+            remove_el(wandering_family_option_text)
+            remove_el(wandering_family_option_image)
+            mecha_dragon()
+    if "fight" in user_input or "defend" in user_input or "something" in user_input or "run" in user_input:
+        mecha_dragon_fight_option()
+    
     
 def upd_input(event):
     global user_input
