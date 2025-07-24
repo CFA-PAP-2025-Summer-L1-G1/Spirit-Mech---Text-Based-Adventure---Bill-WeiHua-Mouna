@@ -291,7 +291,7 @@ class Entity(pygame.sprite.Sprite, Element):
 
 class Text(Element):
     def __init__(self, text, font_size, x=0, y=0, centered = False):
-        self.font = pygame.font.SysFont("Calbri", font_size)
+        self.font = pygame.font.SysFont("Monospace", font_size)
         Element.__init__(self, x, y)
         self.text = text
         self.font_size = font_size
